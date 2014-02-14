@@ -49,7 +49,7 @@ Shorten a URL. If the same `long_url` is shortened more than once, the same shor
       "created": "2014-01-01T12:00:00Z"
     }
 
-`400` If the `long_url` parameter is missing with a body of:
+`400` If the `long_url` parameter is missing or the body is not JSON with a body of:
 
     {
       "error": "MISSING_URL"
@@ -134,8 +134,8 @@ Some modifications may be necessary to `conf/application.conf` depending on your
 
     # Base server name to use in generated URLs
     application.shortDomain=http://localhost
-    # The format of the mongo url is mongodb://[username:password@]host1[:port1][,hostN[:portN]]/dbName
-    mongodb.url="mongodb://localhost:27017/shorty"
+    # Location of your mongo server
+    mongodb.servers = ["localhost:27017"]
 
 You will also need to run a setup script on mongo to set up some collections/indexes. This script is in the `scripts` folder -called `create-db.js`. Note that running this script will drop the existing database if it already exists. Just run:
 

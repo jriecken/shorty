@@ -1,7 +1,6 @@
 package controllers
 
 import javax.inject.Singleton
-import play.api._
 import play.api.mvc._
 
 @Singleton
