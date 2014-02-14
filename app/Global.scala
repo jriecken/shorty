@@ -1,15 +1,17 @@
-import com.google.inject.{Guice, AbstractModule}
+import com.google.inject.{AbstractModule, Guice}
 import net.codingwell.scalaguice.ScalaModule
 import play.api.GlobalSettings
+import services._
 
 /**
- * Set up dependency injection for the controllers.
+ * Set up dependency injection.
  */
 object Global extends GlobalSettings {
 
   val injector = Guice.createInjector(new AbstractModule with ScalaModule {
-    def configure {
-      // TODO: bind interfaces to impls
+    def configure() {
+      bind[CounterService].to[CounterServiceImpl]
+      bind[UrlShorteningService].to[UrlShorteningServiceImpl]
     }
   })
 
