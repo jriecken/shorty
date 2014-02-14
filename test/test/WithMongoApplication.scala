@@ -9,9 +9,10 @@ import play.api.test._
 import play.modules.reactivemongo.ReactiveMongoPlugin
 
 /**
- * Helper that initializes play pointing at a test mongo database. The database is dropped after each test.
+ * Helper that initializes play pointing at a test mongo database. The database is dropped before each test.
  *
- * Logging is turned off.
+ * Logging is turned off so that ReactiveMongo doesn't spam the console with junk when it is restarted with
+ * every test.
  */
 abstract class WithMongoApplication extends WithApplication(FakeApplication(additionalConfiguration = Map(
   "mongodb.db" -> "shorty-test",

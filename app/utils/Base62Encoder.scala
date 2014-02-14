@@ -22,20 +22,18 @@ object Base62Encoder {
       throw new IllegalArgumentException("Can't encode negative numbers")
     }
 
-    // Convert a Base 10 number into a list of Base 62 digits
     @tailrec
-    def convertBase(i: Long, acc: List[Int]): List[Int] = {
+    def makeBase62Digits(i: Long, acc: List[Int]): List[Int] = {
       val div = i / Base
       val rem = (i % Base).toInt
       if (div == 0) {
         rem :: acc
       } else {
-        convertBase(div, rem :: acc)
+        makeBase62Digits(div, rem :: acc)
       }
     }
 
-    // Convert the number and map the Base 62 digits to a character representation of the digit.
-    convertBase(num, Nil).map(Characters.charAt).mkString
+    makeBase62Digits(num, Nil).map(Characters.charAt).mkString
   }
 
   /**
@@ -51,7 +49,6 @@ object Base62Encoder {
       throw new IllegalArgumentException("Can't decode an empty string")
     }
 
-    // Create a list of (character, power of 62)
     val decoded = str.zip(str.indices.reverse).foldLeft(BigInt(0)) { (result, charAndPower) =>
       val (char, power) = charAndPower
       val charValue = Characters.indexOf(char)
@@ -68,5 +65,4 @@ object Base62Encoder {
       decoded.toLong
     }
   }
-
 }

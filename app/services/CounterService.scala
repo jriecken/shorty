@@ -52,11 +52,9 @@ class CounterServiceImpl extends CounterService {
       Update(modifier, fetchNewObject = true),
       upsert = true // Just in case the counter isn't there
     )
-    val result = collection.db.command(command).map {
-      maybeCount =>
+    collection.db.command(command).map { maybeCount =>
       // Since we're upserting, the counter should never be null, but in case it is, just return the toIncrement value
-        maybeCount.flatMap(_.getAs[Long]("count")).getOrElse(toIncrement)
+      maybeCount.flatMap(_.getAs[Long]("count")).getOrElse(toIncrement)
     }
-    result
   }
 }

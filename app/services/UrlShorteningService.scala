@@ -12,6 +12,7 @@ import play.api.libs.json._
 import play.modules.reactivemongo.ReactiveMongoPlugin
 import play.modules.reactivemongo.json.collection.JSONCollection
 import utils.Base62Encoder
+import utils.JsonFormats._
 
 /**
  * Data object for Short Url click statistics.
@@ -77,8 +78,7 @@ class UrlShorteningServiceImpl @Inject() (counterService: CounterService) extend
       new URI(url)
       true
     } catch {
-      case e: URISyntaxException =>
-        false
+      case e: URISyntaxException => false
     }
   }
 
@@ -111,5 +111,4 @@ class UrlShorteningServiceImpl @Inject() (counterService: CounterService) extend
       lastError.n == 1
     }
   }
-
 }

@@ -62,8 +62,6 @@ class UrlShorteningServiceTest extends Specification with NoTimeConversions with
   }
 
   "UrlShorteningService.load" should {
-
-
     "return None if the URL does not exist" in new WithMongoApplication {
       val maybeShortUrl = Await.result(urlShorteningService.load("AAA"), 2.seconds)
 
