@@ -93,7 +93,7 @@ class UrlShorteningServiceImpl @Inject() (counterService: CounterService) extend
         maybeUrl.map(Future.successful).getOrElse {
           // We need to create a new one - create a random gap between hashes to avoid direct enumeration of values
           counterService.incrementRandom("urls", 100).flatMap { counter =>
-            val hash = Base62Encoder.encode(counter)
+            val hash = Base62Encoder.encode(BigInt(counter))
             val toInsert = ShortUrl(_id = hash, long_url = url)
             collection.insert(toInsert).map(_ => toInsert)
           }

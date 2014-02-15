@@ -7,8 +7,7 @@ import scala.annotation.tailrec
  */
 object Base62Encoder {
   private val Characters = (('0' to '9') ++ ('a' to 'z') ++ ('A' to 'Z')).mkString
-  private val Base = Characters.length
-  private val BigIntBase = BigInt(Base)
+  private val Base = BigInt(Characters.length)
 
   /**
    * Encodes a positive Base 10 number into a Base 62 string.
@@ -17,16 +16,16 @@ object Base62Encoder {
    * @return The number as a Base 62 string.
    * @throws IllegalArgumentException if the number is negative.
    */
-  def encode(num: Long): String = {
-    if (num < 0) {
+  def encode(num: BigInt): String = {
+    if (num < BigInt(0)) {
       throw new IllegalArgumentException("Can't encode negative numbers")
     }
 
     @tailrec
-    def makeBase62Digits(i: Long, acc: List[Int]): List[Int] = {
+    def makeBase62Digits(i: BigInt, acc: List[Int]): List[Int] = {
       val div = i / Base
       val rem = (i % Base).toInt
-      if (div == 0) {
+      if (div == BigInt(0)) {
         rem :: acc
       } else {
         makeBase62Digits(div, rem :: acc)
@@ -41,28 +40,21 @@ object Base62Encoder {
    *
    * @param str The string to decode.
    * @return The Base 10 number that the string represents.
-   * @throws IllegalArgumentException if the string is empty, contains a non-Base 62 character,
-   *                                  or represents a number larger than Long.MaxValue
+   * @throws IllegalArgumentException if the string is empty or contains a non-Base 62 character
    */
-  def decode(str: String): Long = {
+  def decode(str: String): BigInt = {
     if (str.isEmpty) {
       throw new IllegalArgumentException("Can't decode an empty string")
     }
 
-    val decoded = str.zip(str.indices.reverse).foldLeft(BigInt(0)) { (result, charAndPower) =>
+    str.zip(str.indices.reverse).foldLeft(BigInt(0)) { (result, charAndPower) =>
       val (char, power) = charAndPower
       val charValue = Characters.indexOf(char)
       if (charValue < 0) {
         throw new IllegalArgumentException(s"Invalid character: $char")
       } else {
-        result + (BigIntBase.pow(power) * BigInt(charValue))
+        result + (Base.pow(power) * BigInt(charValue))
       }
-    }
-
-    if (!decoded.isValidLong) {
-      throw new IllegalArgumentException("String represents a number larger than Long.MaxValue")
-    } else {
-      decoded.toLong
     }
   }
 }
