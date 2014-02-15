@@ -3,11 +3,9 @@ package controllers
 import scala.concurrent.Future
 
 import javax.inject.{Inject, Singleton}
-import play.api.Play
-import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
-import services.{ShortUrl, UrlShorteningService}
+import services.UrlShorteningService
 import utils.JsonFormats._
 
 /**
@@ -61,19 +59,6 @@ class ApiController @Inject() (urlShorteningService: UrlShorteningService) exten
         notFound
       }
     }
-  }
-
-  /**
-   * Transforms a short url model to an API response view.
-   */
-  private def generateShortUrlView(shortUrl: ShortUrl) = {
-    val shortDomain = Play.application.configuration.getString("application.shortDomain").get
-    ShortUrlView(
-      short_url = s"$shortDomain/${shortUrl._id}",
-      hash = shortUrl._id,
-      long_url = shortUrl.long_url,
-      created = shortUrl.created
-    )
   }
 
   private def notFound = NotFound(Json.obj("error" -> "NOT_FOUND"))

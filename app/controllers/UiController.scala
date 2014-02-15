@@ -34,4 +34,20 @@ class UiController @Inject() (urlShorteningService: UrlShorteningService) extend
       }
     }
   }
+
+  /**
+   * Show a page that has information about how many times a short URL has been clicked.
+   */
+  def stats(hash: String) = ActionWithHeaders.async { request =>
+    urlShorteningService.load(hash).map { maybeShortUrl =>
+      maybeShortUrl.map { shortUrl =>
+        Ok(views.html.stats(
+          shortUrl = generateShortUrlView(shortUrl),
+          clickCount = shortUrl.stats.clicks)
+        )
+      }.getOrElse {
+        NotFound(views.html.notFound())
+      }
+    }
+  }
 }

@@ -1,0 +1,6 @@
+@(shortUrl: ShortUrlView, clickCount: Long)
+
+@main("Shorty - A URL shortener") {
+    <h1>Stats</h1>
+    <p>The short url @{shortUrl.short_url} that maps to @{shortUrl.long_url} has been clicked @clickCount time(s).</p>
+}

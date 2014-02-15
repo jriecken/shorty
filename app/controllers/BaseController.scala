@@ -6,6 +6,7 @@ import play.api.Play
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc._
+import services.ShortUrl
 
 object BaseController {
   val NodeIdHeader = "X-Shorty-NodeId"
@@ -28,5 +29,18 @@ trait BaseController extends Controller {
         )
       }
     }
+  }
+
+  /**
+   * Transforms a short url model to an API response view.
+   */
+  protected def generateShortUrlView(shortUrl: ShortUrl) = {
+    val shortDomain = Play.application.configuration.getString("application.shortDomain").get
+    ShortUrlView(
+      short_url = s"$shortDomain/${shortUrl._id}",
+      hash = shortUrl._id,
+      long_url = shortUrl.long_url,
+      created = shortUrl.created
+    )
   }
 }

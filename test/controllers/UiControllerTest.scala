@@ -9,7 +9,7 @@ import org.specs2.mutable._
 import play.api.http.HeaderNames
 import play.api.test._
 import play.api.test.Helpers._
-import services.{ShortUrl, UrlShorteningService}
+import services.{ShortUrl, ShortUrlStats, UrlShorteningService}
 import test.WithTestApplication
 
 class UiControllerTest extends Specification with Mockito with HeaderNames {
@@ -62,6 +62,44 @@ class UiControllerTest extends Specification with Mockito with HeaderNames {
 
       there was one(urlShorteningService).load("ABC")
       there was one(urlShorteningService).trackClick("ABC")
+    }
+  }
+
+  "UiController.stats" should {
+    "go to the 404 page if the short URL doesn't exist" in new WithTestApplication {
+      reset(urlShorteningService)
+
+      urlShorteningService.load(anyString) returns Future.successful(None)
+
+      val result = controller.stats("ABC").apply(FakeRequest(GET, "/ABC/stats"))
+
+      status(result) must equalTo(NOT_FOUND)
+      contentType(result) must beSome.which(_ == "text/html")
+      contentAsString(result) must contain("Not Found")
+      header(NodeIdHeader, result) must beSome.which(_ == "1")
+
+      there was one(urlShorteningService).load("ABC")
+    }
+
+    "show a page with stats on the short URL" in new WithTestApplication {
+      reset(urlShorteningService)
+
+      urlShorteningService.load(anyString) returns Future.successful(Some(ShortUrl(
+        _id = "ABC",
+        long_url = "http://www.google.com",
+        stats = ShortUrlStats(clicks = 42)
+      )))
+
+      val result = controller.stats("ABC").apply(FakeRequest(GET, "/ABC/stats"))
+
+      status(result) must equalTo(OK)
+      contentType(result) must beSome.which(_ == "text/html")
+      contentAsString(result) must contain("http://localhost/ABC")
+      contentAsString(result) must contain("http://www.google.com")
+      contentAsString(result) must contain("42")
+      header(NodeIdHeader, result) must beSome.which(_ == "1")
+
+      there was one(urlShorteningService).load("ABC")
     }
   }
 }
