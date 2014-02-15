@@ -10,7 +10,7 @@ object Global extends GlobalSettings {
 
   val injector = Guice.createInjector(new AbstractModule with ScalaModule {
     def configure() {
-      bind[CounterService].to[CounterServiceImpl]
+      bind[CounterService].to[MongoCounterService]
       bind[UrlShorteningService].to[UrlShorteningServiceImpl]
     }
   })

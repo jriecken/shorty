@@ -28,28 +28,25 @@ class UrlShorteningServiceTest extends Specification with NoTimeConversions with
 
     "shorten a new URL" in new WithTestApplication(useMongo = true) {
       reset(counterService)
-      counterService.incrementRandom(anyString, anyInt) returns Future.successful(100)
+      counterService.nextValue returns Future.successful(BigInt(100))
 
       val urlToShorten = "http://www.example.com"
       val shortUrl = Await.result(urlShorteningService.create(urlToShorten), 2.seconds)
-      shortUrl._id must equalTo(Base62Encoder.encode(100))
+      shortUrl._id must equalTo(Base62Encoder.encode(BigInt(100)))
       shortUrl.long_url must equalTo(urlToShorten)
       shortUrl.stats.clicks must equalTo(0)
 
-      there was one(counterService).incrementRandom("urls", 100)
+      there was one(counterService).nextValue
     }
 
     "return an existing shortened URL" in new WithTestApplication(useMongo = true) {
       reset(counterService)
-      counterService.incrementRandom(anyString, anyInt) returns Future.successful(100)
+      counterService.nextValue returns Future.successful(BigInt(100))
 
       val urlToShorten = "http://www.example2.com"
       val shortUrl = Await.result(urlShorteningService.create(urlToShorten), 2.seconds)
-      shortUrl._id must equalTo(Base62Encoder.encode(100))
-      shortUrl.long_url must equalTo(urlToShorten)
-      shortUrl.stats.clicks must equalTo(0)
 
-      there was one(counterService).incrementRandom("urls", 100)
+      there was one(counterService).nextValue
 
       reset(counterService)
 
@@ -57,7 +54,7 @@ class UrlShorteningServiceTest extends Specification with NoTimeConversions with
       val newShortUrl = Await.result(urlShorteningService.create(urlToShorten), 2.second)
       newShortUrl must equalTo(shortUrl)
 
-      there was no(counterService).incrementRandom(anyString, anyInt)
+      there was no(counterService).nextValue
     }
   }
 
@@ -70,15 +67,15 @@ class UrlShorteningServiceTest extends Specification with NoTimeConversions with
 
     "return an existing shortened URL" in new WithTestApplication(useMongo = true) {
       reset(counterService)
-      counterService.incrementRandom(anyString, anyInt) returns Future.successful(100)
+      counterService.nextValue returns Future.successful(BigInt(100))
 
       val urlToShorten = "http://www.example.com"
       val shortUrl = Await.result(urlShorteningService.create(urlToShorten), 2.seconds)
-      shortUrl._id must equalTo(Base62Encoder.encode(100))
+      shortUrl._id must equalTo(Base62Encoder.encode(BigInt(100)))
       shortUrl.long_url must equalTo(urlToShorten)
       shortUrl.stats.clicks must equalTo(0)
 
-      there was one(counterService).incrementRandom("urls", 100)
+      there was one(counterService).nextValue
 
       val maybeShortUrl = Await.result(urlShorteningService.load(shortUrl._id), 2.seconds)
       maybeShortUrl must beSome(shortUrl)
@@ -93,15 +90,12 @@ class UrlShorteningServiceTest extends Specification with NoTimeConversions with
 
     "increment the count of an existing short URL" in new WithTestApplication(useMongo = true) {
       reset(counterService)
-      counterService.incrementRandom(anyString, anyInt) returns Future.successful(100)
+      counterService.nextValue returns Future.successful(BigInt(100))
 
       val urlToShorten = "http://www.example.com"
       val shortUrl = Await.result(urlShorteningService.create(urlToShorten), 2.seconds)
-      shortUrl._id must equalTo(Base62Encoder.encode(100))
-      shortUrl.long_url must equalTo(urlToShorten)
-      shortUrl.stats.clicks must equalTo(0)
 
-      there was one(counterService).incrementRandom("urls", 100)
+      there was one(counterService).nextValue
 
       // Click the link a few times
       Await.result(urlShorteningService.trackClick(shortUrl._id), 2.seconds) must beTrue
