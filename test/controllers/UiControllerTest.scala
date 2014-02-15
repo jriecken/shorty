@@ -3,11 +3,11 @@ package controllers
 import org.specs2.mutable._
 import play.api.test._
 import play.api.test.Helpers._
-import test.WithMongoApplication
+import test.WithTestApplication
 
 class UiControllerTest extends Specification {
   "UiController" should {
-    "render the index page" in new WithMongoApplication {
+    "render the index page" in new WithTestApplication {
       val home = route(FakeRequest(GET, "/")).get
 
       status(home) must equalTo(OK)

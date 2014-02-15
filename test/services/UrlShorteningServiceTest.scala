@@ -5,7 +5,7 @@ import scala.concurrent.duration._
 
 import org.specs2.mutable._
 import org.specs2.time.NoTimeConversions
-import test.WithMongoApplication
+import test.WithTestApplication
 
 import org.mockito.Mockito.reset
 import org.specs2.mock.Mockito
@@ -26,7 +26,7 @@ class UrlShorteningServiceTest extends Specification with NoTimeConversions with
       Await.result(urlShorteningService.create(invalidUrl), 1.second) must throwA(new IllegalArgumentException("INVALID_URL"))
     }
 
-    "shorten a new URL" in new WithMongoApplication {
+    "shorten a new URL" in new WithTestApplication(useMongo = true) {
       reset(counterService)
       counterService.incrementRandom(anyString, anyInt) returns Future.successful(100)
 
@@ -39,7 +39,7 @@ class UrlShorteningServiceTest extends Specification with NoTimeConversions with
       there was one(counterService).incrementRandom("urls", 100)
     }
 
-    "return an existing shortened URL" in new WithMongoApplication {
+    "return an existing shortened URL" in new WithTestApplication(useMongo = true) {
       reset(counterService)
       counterService.incrementRandom(anyString, anyInt) returns Future.successful(100)
 
@@ -62,13 +62,13 @@ class UrlShorteningServiceTest extends Specification with NoTimeConversions with
   }
 
   "UrlShorteningService.load" should {
-    "return None if the URL does not exist" in new WithMongoApplication {
+    "return None if the URL does not exist" in new WithTestApplication(useMongo = true) {
       val maybeShortUrl = Await.result(urlShorteningService.load("AAA"), 2.seconds)
 
       maybeShortUrl must beNone
     }
 
-    "return an existing shortened URL" in new WithMongoApplication {
+    "return an existing shortened URL" in new WithTestApplication(useMongo = true) {
       reset(counterService)
       counterService.incrementRandom(anyString, anyInt) returns Future.successful(100)
 
@@ -86,12 +86,12 @@ class UrlShorteningServiceTest extends Specification with NoTimeConversions with
   }
 
   "UrlShorteningService.trackClick" should {
-    "do nothing for a nonexisting short URL" in new WithMongoApplication {
+    "do nothing for a nonexisting short URL" in new WithTestApplication(useMongo = true) {
       val changed = Await.result(urlShorteningService.trackClick("AAAA"), 2.seconds)
       changed must beFalse
     }
 
-    "increment the count of an existing short URL" in new WithMongoApplication {
+    "increment the count of an existing short URL" in new WithTestApplication(useMongo = true) {
       reset(counterService)
       counterService.incrementRandom(anyString, anyInt) returns Future.successful(100)
 
