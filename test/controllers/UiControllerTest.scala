@@ -56,7 +56,7 @@ class UiControllerTest extends Specification with Mockito with HeaderNames {
 
       val result = controller.redirect("ABC").apply(FakeRequest(GET, "/ABC"))
 
-      status(result) must equalTo(TEMPORARY_REDIRECT)
+      status(result) must equalTo(FOUND)
       header(LOCATION, result) must beSome.which(_ == "http://www.google.com")
       header(NodeIdHeader, result) must beSome.which(_ == "1")
 

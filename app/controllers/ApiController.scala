@@ -6,7 +6,6 @@ import javax.inject.{Inject, Singleton}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
 import services.UrlShorteningService
-import utils.JsonFormats._
 
 /**
  * Controller that exposes the URL shortener REST API.

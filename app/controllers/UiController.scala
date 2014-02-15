@@ -27,7 +27,7 @@ class UiController @Inject() (urlShorteningService: UrlShorteningService) extend
     urlShorteningService.load(hash).flatMap { maybeShortUrl =>
       maybeShortUrl.map { shortUrl =>
         urlShorteningService.trackClick(hash).map { _ =>
-          TemporaryRedirect(shortUrl.long_url)
+          Found(shortUrl.long_url)
         }
       }.getOrElse {
         Future.successful(NotFound(views.html.notFound()))

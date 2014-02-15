@@ -6,7 +6,6 @@ import play.api.libs.json._
 import play.api.test._
 import play.api.test.Helpers._
 import test.WithTestApplication
-import utils.JsonFormats._
 
 /**
  * This test performs a simple happy-path end-to-end through the entire workflow.
@@ -25,10 +24,10 @@ class EndToEndIntegrationTest extends Specification with HeaderNames {
 
       // "Visit" it a few times
       val visit1 = route(FakeRequest(GET, s"/${shortenedUrl.hash}")).get
-      status(visit1) must equalTo(TEMPORARY_REDIRECT)
+      status(visit1) must equalTo(FOUND)
       header(LOCATION, visit1) must beSome.which(_ == "http://www.google.com")
       val visit2 = route(FakeRequest(GET, s"/${shortenedUrl.hash}")).get
-      status(visit2) must equalTo(TEMPORARY_REDIRECT)
+      status(visit2) must equalTo(FOUND)
       header(LOCATION, visit2) must beSome.which(_ == "http://www.google.com")
 
       // Retrieve the click stats

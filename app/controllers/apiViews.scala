@@ -3,6 +3,7 @@ package controllers
 import java.util.Date
 
 import play.api.libs.json.Json
+import utils.JsonFormats._
 
 case class ShortUrlView(
   short_url: String,

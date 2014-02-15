@@ -12,7 +12,6 @@ import play.api.test._
 import play.api.test.Helpers._
 import services.{ShortUrl, ShortUrlStats, UrlShorteningService}
 import test.WithTestApplication
-import utils.JsonFormats._
 
 class ApiControllerTest extends Specification with Mockito with HeaderNames {
   val urlShorteningService = mock[UrlShorteningService]
