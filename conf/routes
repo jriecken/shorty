@@ -1,9 +1,11 @@
-# UI Endpoints
-GET     /                           @controllers.UiController.index
-# TODO - Other UI Endpoints
+# Static Assets
+GET         /assets/*file  controllers.Assets.at(path="/public", file)
 
 # API
-# TODO - Api Endpoints
+POST        /v1/urls              @controllers.ApiController.create
+GET         /v1/urls/:hash        @controllers.ApiController.load(hash)
+GET         /v1/urls/:hash/stats  @controllers.ApiController.stats(hash)
 
-# Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+# UI Endpoints
+GET         /       @controllers.UiController.index
+GET         /:hash  @controllers.UiController.redirect(hash)

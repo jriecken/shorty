@@ -4,8 +4,8 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.specs2.mutable._
-import test.WithTestApplication
 import org.specs2.time.NoTimeConversions
+import test.WithTestApplication
 
 class GeneratorCounterServiceTest extends Specification with NoTimeConversions {
   "GeneratorCounter.nextValue" should {

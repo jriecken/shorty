@@ -23,10 +23,14 @@ Shorty has both an HTML interface as well as a JSON-based REST API.
 (These URLs all assume the server is running on `http://localhost`)
 
  - To shorten a URL, visit `http://localhost/` and enter your "long URL".
- - To use the shortened URL, visit `http://localhost/:hash` (where :hash is the "short" code).
+ - To use the shortened URL, visit `http://localhost/:hash` (where :hash is the "short" code). This will increment the click stats for the url.
  - To view click stats for a shortened URL, visit `http://localhost/:hash/stats`.
 
 ## REST API
+
+All API responses have two custom HTTP headers:
+ - `X-Shorty-NodeId` - Indicates which application server node handled the request.
+ - `X-Shorty-ResponseTime` - Indicates how long the request took to generate.
 
 ### `POST /v1/urls`
 
@@ -49,7 +53,7 @@ Shorten a URL. If the same `long_url` is shortened more than once, the same shor
       "created": "2014-01-01T12:00:00Z"
     }
 
-`400` If the `long_url` parameter is missing or the body is not JSON with a body of:
+`400` If the `long_url` parameter is missing:
 
     {
       "error": "MISSING_URL"
@@ -69,7 +73,8 @@ Shorten a URL. If the same `long_url` is shortened more than once, the same shor
 
 ### `GET /v1/urls/:hash`
 
-Expand a short URL (where `:hash` is the "short code" in the short URL).
+Expand a short URL (where `:hash` is the "short code" in the short URL). This does *not* increase
+the click count.
 
 **Response**
 
@@ -97,7 +102,7 @@ Get click stats for the specified short URL (where `:hash` is the "short code" i
 `200` If the short URL exists with a body of:
 
     {
-      "count": 12345
+      "clicks": 12345
     }
 
 `404` If a short URL doesn't exist with the specified hash with a body of:

@@ -21,9 +21,7 @@ import play.api.Play.current
  * creates fairly large numbers which correspond to longer URLs (up to 8 characters)
  */
 class GeneratorCounterService extends CounterService {
-  lazy val nodeId = Play.application.configuration.getLong("application.nodeId").getOrElse {
-    throw new IllegalArgumentException("application.nodeId must be defined in application.conf")
-  }
+  lazy val nodeId = Play.application.configuration.getLong("application.nodeId").get
 
   // The rolling counter
   private var roller = -1

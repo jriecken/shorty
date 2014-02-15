@@ -3,12 +3,11 @@ package services
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 
+import org.mockito.Mockito.reset
+import org.specs2.mock.Mockito
 import org.specs2.mutable._
 import org.specs2.time.NoTimeConversions
 import test.WithTestApplication
-
-import org.mockito.Mockito.reset
-import org.specs2.mock.Mockito
 import utils.Base62Encoder
 
 class UrlShorteningServiceTest extends Specification with NoTimeConversions with Mockito {
