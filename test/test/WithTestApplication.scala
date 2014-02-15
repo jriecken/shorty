@@ -19,6 +19,7 @@ import play.modules.reactivemongo.ReactiveMongoPlugin
  */
 abstract class WithTestApplication(useMongo: Boolean = false) extends WithApplication(FakeApplication(
   additionalConfiguration = Map(
+    "application.nodeId" -> 1,
     "mongodb.db" -> "shorty-test",
     "logger.root" -> "OFF",
     "logger.application" -> "OFF",

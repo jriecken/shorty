@@ -26,9 +26,12 @@ There is a `scripts/create-db.js` script that will do this for you. To run it:
 
 Extract the `shorty-X.X.tgz` file to a location on your server.
 
-You can then run the application with: (replace url/domain/pidfile name as appropriate)
+You can then run the application with: (replace url/domain/nodeId/pidfile name as appropriate)
 
-    $ ./bin/shorty -Dmongo.url=mongodb://localhost:27017/shorty -Dapplication.shortDomain=http://shorty.example.com -Dpidfile=/var/run/shorty.pid
+    $ ./bin/shorty -Dmongo.url=mongodb://localhost:27017/shorty \
+        -Dapplication.shortDomain=http://shorty.example.com \
+        -Dapplication.nodeId=1 \
+        -Dpidfile=/var/run/shorty.pid
 
 To stop the application:
 

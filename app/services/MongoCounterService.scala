@@ -12,6 +12,9 @@ import reactivemongo.core.commands.{FindAndModify, Update}
 
 /**
  * A counter implementation that uses an atomically incremented value in a document in Mongo.
+ *
+ * The benefit of this counter is that it generates small numbers which translates to shorter
+ * urls. The drawback is that it is relatively slow.
  */
 @Singleton
 class MongoCounterService extends CounterService {
