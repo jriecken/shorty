@@ -5,7 +5,8 @@ import scala.concurrent.Future
 import javax.inject.{Inject, Singleton}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
-import services.UrlShorteningService
+import play.api.mvc.SimpleResult
+import services.{ShortUrl, UrlShorteningService}
 
 /**
  * Controller that exposes the URL shortener REST API.
@@ -36,12 +37,8 @@ class ApiController @Inject() (urlShorteningService: UrlShorteningService) exten
    * Expands a URL (does not increment the view count)
    */
   def load(hash: String) = ShortyAction.async { request =>
-    urlShorteningService.load(hash).map { maybeShortUrl =>
-      maybeShortUrl.map { shortUrl =>
-        Ok(Json.toJson(generateShortUrlView(shortUrl)))
-      }.getOrElse {
-        notFound
-      }
+    withLoadedShortUrl(hash) { shortUrl =>
+      Ok(Json.toJson(generateShortUrlView(shortUrl)))
     }
   }
 
@@ -51,12 +48,18 @@ class ApiController @Inject() (urlShorteningService: UrlShorteningService) exten
    * Get click stats for a short URL.
    */
   def stats(hash: String) = ShortyAction.async { request =>
+    withLoadedShortUrl(hash) { shortUrl =>
+      Ok(Json.toJson(StatsView(clicks = shortUrl.stats.clicks)))
+    }
+  }
+
+  /**
+   * Helper to invoke a block returning a SimpleResult with short URL having the specified hash, or
+   * return a 404 if the short URL doesn't exist.
+   */
+  private def withLoadedShortUrl(hash: String)(body: (ShortUrl) => SimpleResult): Future[SimpleResult] = {
     urlShorteningService.load(hash).map { maybeShortUrl =>
-      maybeShortUrl.map { shortUrl =>
-        Ok(Json.toJson(StatsView(clicks = shortUrl.stats.clicks)))
-      }.getOrElse {
-        notFound
-      }
+      maybeShortUrl.map(body).getOrElse(notFound)
     }
   }
 }

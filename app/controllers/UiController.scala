@@ -32,8 +32,8 @@ class UiController @Inject() (urlShorteningService: UrlShorteningService) extend
   /**
    * GET /:hash
    *
-   * Redirect to a short url (or show the 404 page). Increments the view count
-   * for the hash
+   * Redirect to a short URL (or show the 404 page if it doesn't exist). Increments the view count
+   * for the short URL
    */
   def redirect(hash: String) = ShortyAction.async { request =>
     urlShorteningService.load(hash).flatMap { maybeShortUrl =>
@@ -50,7 +50,8 @@ class UiController @Inject() (urlShorteningService: UrlShorteningService) extend
   /**
    * GET /:hash/stats
    *
-   * Show a page that has information about how many times a short URL has been clicked.
+   * Show a page that has information about how many times a short URL has been clicked (or show the 404 page
+   * if it doesn't exist).
    */
   def stats(hash: String) = ShortyAction.async { request =>
     urlShorteningService.load(hash).map { maybeShortUrl =>

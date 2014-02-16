@@ -4,11 +4,11 @@
 @main("Stats - Shorty") {
 <div class="text-center">
   <div class="well">
-    <a href="@{shortUrl.short_url}">@{shortUrl.short_url}</a>
+    <a href="@{shortUrl.short_url}" class="break-word">@{shortUrl.short_url}</a>
   </div>
   <p>is a short URL for</p>
   <div class="well">
-    <a href="@{shortUrl.long_url}">@{shortUrl.long_url}</a>
+    <a href="@{shortUrl.long_url}" class="break-word">@{shortUrl.long_url}</a>
   </div>
   <p>This URL was first shortened on @DateFormat.getDateInstance(DateFormat.LONG).format(shortUrl.created).</p>
   <p>It has been visited <strong>@clickCount</strong> @if(clickCount == 1) { time } else { times }.</p>

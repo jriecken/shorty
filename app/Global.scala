@@ -7,7 +7,6 @@ import services._
  * Set up dependency injection.
  */
 object Global extends GlobalSettings {
-
   val injector = Guice.createInjector(new AbstractModule with ScalaModule {
     def configure() {
       bind[CounterService].to[MongoCounterService] // Switch this with GeneratorCounterService to try out the other one
