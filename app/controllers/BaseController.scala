@@ -5,6 +5,7 @@ import scala.concurrent.Future
 import play.api.Play
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.libs.json.Json
 import play.api.mvc._
 import services.ShortUrl
 
@@ -17,9 +18,9 @@ trait BaseController extends Controller {
   import BaseController._
 
   /**
-   * Action wrapper that adds some custom headers
+   * Action wrapper that adds some custom headers and handles unexpected exceptions.
    */
-  object ActionWithHeaders extends ActionBuilder[Request] {
+  object ShortyAction extends ActionBuilder[Request] {
     def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[SimpleResult]) = {
       val start = System.currentTimeMillis
       block(request).map { result =>
@@ -27,6 +28,8 @@ trait BaseController extends Controller {
           NodeIdHeader -> Play.application.configuration.getString("application.nodeId").get,
           ResponseTimeHeader -> (System.currentTimeMillis - start).toString
         )
+      }.recover {
+        case e: Exception => internalServerError(e.getMessage)
       }
     }
   }
@@ -43,4 +46,8 @@ trait BaseController extends Controller {
       created = shortUrl.created
     )
   }
+
+  protected def notFound = NotFound(Json.obj("error" -> "NOT_FOUND"))
+  protected def badRequest(reason: String) = BadRequest(Json.obj("error" -> reason))
+  protected def internalServerError(reason: String) = InternalServerError(Json.obj("error" -> reason))
 }

@@ -1,4 +1,29 @@
-@main("Shorty - A URL shortener") {
-  <h1>Shorten a URL!</h1>
-  <p>TODO</p>
+@scripts = {
+  <script src="@routes.Assets.at("js/shortener.js")"></script>
+  <script>
+  $(function () {
+    Shortener.init();
+  });
+  </script>
+}
+
+@main("Shorty", scripts) {
+<div class="shorten">
+  <div role="form">
+    <div class="form-group" id="shortenFormGroup">
+      <label for="shortnField" class="sr-only">Enter a long URL</label>
+      <div class="input-group input-group-lg">
+        <input type="text" class="form-control" placeholder="Enter a long URL" id="shortenField">
+        <span class="input-group-btn"><button type="button" class="btn btn-primary" id="shortenButton">Shorten <i class="fa fa-link"></i></button></span>
+      </div>
+      <span class="help-block" style="display: none;" id="validationError"></span>
+    </div>
+  </div>
+  <div class="large-font well well-lg" style="display: none;" id="resultsArea">
+    <p>Your shortened URL is:</p>
+    <p><a href="" id="shortenedUrlLink" target="_blank"></a></p>
+    <p>You can view click statistics on your link by visiting:</p>
+    <p><a href="" id="shortenedUrlStatsLink" target="_blank"></a></p>
+  </div>
+</div>
 }

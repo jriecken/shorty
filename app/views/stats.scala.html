@@ -1,6 +1,16 @@
 @(shortUrl: ShortUrlView, clickCount: Long)
+@import java.text.DateFormat
 
-@main("Shorty - A URL shortener") {
-    <h1>Stats</h1>
-    <p>The short url @{shortUrl.short_url} that maps to @{shortUrl.long_url} has been clicked @clickCount time(s).</p>
+@main("Stats - Shorty") {
+<div class="text-center">
+  <div class="well">
+    <a href="@{shortUrl.short_url}">@{shortUrl.short_url}</a>
+  </div>
+  <p>is a short URL for</p>
+  <div class="well">
+    <a href="@{shortUrl.long_url}">@{shortUrl.long_url}</a>
+  </div>
+  <p>This URL was first shortened on @DateFormat.getDateInstance(DateFormat.LONG).format(shortUrl.created).</p>
+  <p>It has been visited <strong>@clickCount</strong> @if(clickCount == 1) { time } else { times }.</p>
+</div>
 }

@@ -13,7 +13,7 @@ class UiController @Inject() (urlShorteningService: UrlShorteningService) extend
    *
    * Show the URL shortening form
    */
-  def index = ActionWithHeaders {
+  def index = ShortyAction {
     Ok(views.html.index())
   }
 
@@ -23,7 +23,7 @@ class UiController @Inject() (urlShorteningService: UrlShorteningService) extend
    * Redirect to a short url (or show the 404 page). Increments the view count
    * for the hash
    */
-  def redirect(hash: String) = ActionWithHeaders.async { request =>
+  def redirect(hash: String) = ShortyAction.async { request =>
     urlShorteningService.load(hash).flatMap { maybeShortUrl =>
       maybeShortUrl.map { shortUrl =>
         urlShorteningService.trackClick(hash).map { _ =>
@@ -38,7 +38,7 @@ class UiController @Inject() (urlShorteningService: UrlShorteningService) extend
   /**
    * Show a page that has information about how many times a short URL has been clicked.
    */
-  def stats(hash: String) = ActionWithHeaders.async { request =>
+  def stats(hash: String) = ShortyAction.async { request =>
     urlShorteningService.load(hash).map { maybeShortUrl =>
       maybeShortUrl.map { shortUrl =>
         Ok(views.html.stats(

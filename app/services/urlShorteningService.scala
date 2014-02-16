@@ -75,7 +75,10 @@ class UrlShorteningServiceImpl @Inject() (counterService: CounterService) extend
   private def collection = ReactiveMongoPlugin.db.collection[JSONCollection]("urls")
 
   private def isValidUrl(url: String): Boolean = {
-    Try(new URI(url)).map(_ => true).getOrElse(false)
+    Try(new URI(url)).map { uri =>
+      val scheme = uri.getScheme.toLowerCase
+      uri.isAbsolute && (scheme == "http" || scheme == "https")
+    }.getOrElse(false)
   }
 
   def create(url: String): Future[ShortUrl] = {

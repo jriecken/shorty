@@ -17,7 +17,7 @@ class ApiController @Inject() (urlShorteningService: UrlShorteningService) exten
    *
    * Shortens a URL
    */
-  def create = ActionWithHeaders.async(parse.json) { request =>
+  def create = ShortyAction.async(parse.json) { request =>
     val maybeUrl = (request.body \ "long_url").asOpt[String]
     maybeUrl.map { url =>
       urlShorteningService.create(url).map { shortUrl =>
@@ -35,7 +35,7 @@ class ApiController @Inject() (urlShorteningService: UrlShorteningService) exten
    *
    * Expands a URL (does not increment the view count)
    */
-  def load(hash: String) = ActionWithHeaders.async { request =>
+  def load(hash: String) = ShortyAction.async { request =>
     urlShorteningService.load(hash).map { maybeShortUrl =>
       maybeShortUrl.map { shortUrl =>
         Ok(Json.toJson(generateShortUrlView(shortUrl)))
@@ -50,7 +50,7 @@ class ApiController @Inject() (urlShorteningService: UrlShorteningService) exten
    *
    * Get click stats for a short URL.
    */
-  def stats(hash: String) = ActionWithHeaders.async { request =>
+  def stats(hash: String) = ShortyAction.async { request =>
     urlShorteningService.load(hash).map { maybeShortUrl =>
       maybeShortUrl.map { shortUrl =>
         Ok(Json.toJson(StatsView(clicks = shortUrl.stats.clicks)))
@@ -59,7 +59,4 @@ class ApiController @Inject() (urlShorteningService: UrlShorteningService) exten
       }
     }
   }
-
-  private def notFound = NotFound(Json.obj("error" -> "NOT_FOUND"))
-  private def badRequest(reason: String) = BadRequest(Json.obj("error" -> reason))
 }

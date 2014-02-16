@@ -25,6 +25,13 @@ class UrlShorteningServiceTest extends Specification with NoTimeConversions with
       Await.result(urlShorteningService.create(invalidUrl), 1.second) must throwA(new IllegalArgumentException("INVALID_URL"))
     }
 
+    "fail if the url is not absolute or missing a http/https scheme" in {
+      Await.result(urlShorteningService.create("../foo/bar"), 1.second) must throwA(new IllegalArgumentException("INVALID_URL"))
+      Await.result(urlShorteningService.create("/foo/bar"), 1.second) must throwA(new IllegalArgumentException("INVALID_URL"))
+      Await.result(urlShorteningService.create("javascript:alert('hi')"), 1.second) must throwA(new IllegalArgumentException("INVALID_URL"))
+      Await.result(urlShorteningService.create("gopher://who.uses.gopher"), 1.second) must throwA(new IllegalArgumentException("INVALID_URL"))
+    }
+
     "shorten a new URL" in new WithTestApplication(useMongo = true) {
       reset(counterService)
       counterService.nextValue returns Future.successful(BigInt(100))
