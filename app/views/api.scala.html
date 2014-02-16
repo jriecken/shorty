@@ -4,6 +4,11 @@
   <div class="page-header no-top-margin">
       <h1 class="no-top-margin">API Docs</h1>
       <p>Shorty has a REST API for shortening long URLs, expanding shortened URLs, and getting click stats on shortened URLs</p>
+      <p>All API responses return several custom HTTP headers:</p>
+      <ul>
+        <li><code>X-Shorty-NodeId</code> - The id of the application server node that serviced the request.</li>
+        <li><code>X-Shorty-ResponseTime</code> - How long the response took to generate (in milliseconds).</li>
+      </ul>
   </div>
   <h2>Shortening a URL</h2>
   <p><code>POST @shortDomain/v1/urls</code></p>

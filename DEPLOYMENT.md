@@ -28,11 +28,12 @@ Extract the `shorty-X.X.tgz` file to a location on your server.
 
 You can then run the application with: (replace port/mongo url/short domain/node id/pidfile as appropriate)
 
-    $ ./bin/shorty -Dhttp.port=8080 \
+    $ ./bin/shorty -mem 256 -J-server -Dhttp.port=8080 \
         -Dmongodb.url=mongodb://localhost:27017/shorty \
         -Dapplication.shortDomain=http://shorty.example.com \
         -Dapplication.nodeId=1 \
         -Dpidfile.path=/path/to/shorty-1.pid
+
 
 To stop the application:
 
