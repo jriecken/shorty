@@ -30,7 +30,7 @@ class GeneratorCounterService extends CounterService {
     nextValueInternal(System.currentTimeMillis)
   }
 
-  // Helper that is used for unit test to get consistent results
+  // Helper that is used for unit tests to get consistent results
   private[services] def nextValueInternal(now: Long) = {
     val nowInSeconds = now / 1000L
     val nextRollingValue = this.synchronized[Long] {

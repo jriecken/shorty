@@ -11,9 +11,7 @@ import test.WithTestApplication
  * This test performs a simple happy-path end-to-end through the entire workflow.
  */
 class EndToEndIntegrationTest extends Specification with HeaderNames {
-
   "The application" should {
-
     "work end-to-end" in new WithTestApplication(useMongo = true) {
       // Shorten a URL
       val shortenResult = route(FakeRequest(POST, "/v1/urls").withBody(Json.obj(
@@ -35,7 +33,5 @@ class EndToEndIntegrationTest extends Specification with HeaderNames {
       status(statsResult) must equalTo(OK)
       contentAsJson(statsResult).as[StatsView] must equalTo(StatsView(clicks = 2))
     }
-
   }
-
 }

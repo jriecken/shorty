@@ -20,7 +20,7 @@ class UiController @Inject() (urlShorteningService: UrlShorteningService) extend
   }
 
   /**
-   * GET /api
+   * GET /docs/api
    *
    * Show the API Docs
    */
@@ -48,6 +48,8 @@ class UiController @Inject() (urlShorteningService: UrlShorteningService) extend
   }
 
   /**
+   * GET /:hash/stats
+   *
    * Show a page that has information about how many times a short URL has been clicked.
    */
   def stats(hash: String) = ShortyAction.async { request =>

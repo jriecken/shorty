@@ -1,6 +1,6 @@
 name := "shorty"
 
-version := "0.1"
+version := "1.0"
 
 scalacOptions ++= Seq("-encoding", "UTF-8", "-target:jvm-1.7", "-deprecation", "-feature", "-unchecked", "-Xlint")
 

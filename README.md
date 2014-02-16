@@ -138,7 +138,7 @@ Otherwise, go to the [MongoDB Website](http://www.mongodb.org/downloads) and fol
 Some modifications may be necessary to `conf/application.conf` depending on your mongo installation:
 
     # Base server name to use in generated URLs
-    application.shortDomain=http://localhost
+    application.shortDomain=http://localhost:8080
     # Location of your mongo server
     mongodb.servers = ["localhost:27017"]
 
@@ -167,15 +167,5 @@ To run the tests, run:
 Note: Some of the tests require a mongo connection. They put data in a `shorty-test` database. This database is cleared before each test that requires mongo is run.
 
 ### Packaging for deployment
-
-You can package the application for deployment by running:
-
-    $ play universal:package-zip-tarball
-
-This will generate a standalone application in a `.tgz` tarball (in `target/universal`) that does not require `play` to be installed on the production server.
-
-If you untar this on your server, you can start the application by running:
-
-    $ ./bin/shorty
 
 For more information about deploying the application, take a look at [DEPLOYMENT.md](DEPLOYMENT.md)
