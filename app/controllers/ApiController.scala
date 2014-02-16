@@ -17,8 +17,8 @@ class ApiController @Inject() (urlShorteningService: UrlShorteningService) exten
    *
    * Shortens a URL
    */
-  def create = ShortyAction.async(parse.json) { request =>
-    val maybeUrl = (request.body \ "long_url").asOpt[String]
+  def shorten = ShortyAction.async { request =>
+    val maybeUrl = request.body.asJson.flatMap(body => (body \ "long_url").asOpt[String])
     maybeUrl.map { url =>
       urlShorteningService.create(url).map { shortUrl =>
         Ok(Json.toJson(generateShortUrlView(shortUrl)))

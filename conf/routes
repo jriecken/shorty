@@ -2,11 +2,12 @@
 GET         /assets/*file         controllers.Assets.at(path="/public", file)
 
 # API
-POST        /v1/urls              @controllers.ApiController.create
+POST        /v1/urls              @controllers.ApiController.shorten
 GET         /v1/urls/:hash        @controllers.ApiController.load(hash)
 GET         /v1/urls/:hash/stats  @controllers.ApiController.stats(hash)
 
 # UI Endpoints
 GET         /             @controllers.UiController.index
+GET         /docs/api     @controllers.UiController.api
 GET         /:hash        @controllers.UiController.redirect(hash)
 GET         /:hash/stats  @controllers.UiController.stats(hash)

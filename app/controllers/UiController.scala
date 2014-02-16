@@ -3,6 +3,8 @@ package controllers
 import scala.concurrent.Future
 
 import javax.inject.{Inject, Singleton}
+import play.api.Play
+import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import services.UrlShorteningService
 
@@ -15,6 +17,16 @@ class UiController @Inject() (urlShorteningService: UrlShorteningService) extend
    */
   def index = ShortyAction {
     Ok(views.html.index())
+  }
+
+  /**
+   * GET /api
+   *
+   * Show the API Docs
+   */
+  def api = ShortyAction {
+    val shortDomain = Play.application.configuration.getString("application.shortDomain").get
+    Ok(views.html.api(shortDomain))
   }
 
   /**

@@ -29,6 +29,20 @@ class UiControllerTest extends Specification with Mockito with HeaderNames {
     }
   }
 
+  "UiController.api" should {
+    "render the API docs page" in new WithTestApplication {
+      reset(urlShorteningService)
+
+      val result = controller.api().apply(FakeRequest(GET, "/api"))
+
+      status(result) must equalTo(OK)
+      contentType(result) must beSome.which(_ == "text/html")
+      contentAsString(result) must contain ("API Docs")
+      contentAsString(result) must contain ("http://localhost")
+      header(NodeIdHeader, result) must beSome.which(_ == "1")
+    }
+  }
+
   "UiController.redirect" should {
     "go to the 404 page if the short URL doesn't exist" in new WithTestApplication {
       reset(urlShorteningService)

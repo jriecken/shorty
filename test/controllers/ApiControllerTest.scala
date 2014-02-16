@@ -17,12 +17,13 @@ class ApiControllerTest extends Specification with Mockito with HeaderNames {
   val urlShorteningService = mock[UrlShorteningService]
   val controller = new ApiController(urlShorteningService)
 
-  "ApiController.create" should {
+  "ApiController.shorten" should {
     "400 if a url is not provided in the body" in new WithTestApplication {
       reset(urlShorteningService)
 
       val payload = Json.obj()
-      val result = controller.create().apply(FakeRequest(POST, "/v1/urls").withBody(payload))
+
+      val result = controller.shorten.apply(FakeRequest(POST, "/v1/urls").withJsonBody(payload))
 
       status(result) must equalTo(BAD_REQUEST)
       contentAsJson(result).as[Map[String,String]] must equalTo(Map("error" -> "MISSING_URL"))
@@ -35,7 +36,7 @@ class ApiControllerTest extends Specification with Mockito with HeaderNames {
       urlShorteningService.create(anyString) returns Future.failed(new IllegalArgumentException("INVALID_URL"))
 
       val payload = Json.obj("long_url" -> "http://www.google.com")
-      val result = controller.create().apply(FakeRequest(POST, "/v1/urls").withBody(payload))
+      val result = controller.shorten.apply(FakeRequest(POST, "/v1/urls").withJsonBody(payload))
 
       status(result) must equalTo(BAD_REQUEST)
       contentAsJson(result).as[Map[String,String]] must equalTo(Map("error" -> "INVALID_URL"))
@@ -54,7 +55,7 @@ class ApiControllerTest extends Specification with Mockito with HeaderNames {
       urlShorteningService.create(anyString) returns Future.successful(createdShortUrl)
 
       val payload = Json.obj("long_url" -> "http://www.google.com")
-      val result = controller.create().apply(FakeRequest(POST, "/v1/urls").withBody(payload))
+      val result = controller.shorten.apply(FakeRequest(POST, "/v1/urls").withJsonBody(payload))
 
       val expectedResponse = ShortUrlView(
         short_url = "http://localhost/ABC",

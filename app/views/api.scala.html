@@ -1,0 +1,53 @@
+@(shortDomain: String)
+
+@main("API Docs - Shorty") {
+  <div class="page-header no-top-margin">
+      <h1 class="no-top-margin">API Docs</h1>
+      <p>Shorty has a REST API for shortening long URLs, expanding shortened URLs, and getting click stats on shortened URLs</p>
+  </div>
+  <h2>Shortening a URL</h2>
+  <p><code>POST @shortDomain/v1/urls</code></p>
+  <p>Shortening the same URL more than once will always return the same short URL.</p>
+  <p><strong>Request Body</strong></p>
+  <pre>{
+  "long_url": "http://test.example.com"
+}</pre>
+  <p><strong>Response</strong></p>
+  <p>Success (<code>200</code>) if the URL is successfully shortened.</p>
+  <pre>{
+  "short_url": "@shortDomain/A1z3r",
+  "hash": "A1z3r",
+  "long_url": "http://test.example.com",
+  "created": "2014-01-01T12:00:00Z"
+}</pre>
+  <p>Error (<code>400</code>) if invalid data is passed in.</p>
+  <pre>{
+  "error": "INVALID_URL" // or "URL_TOO_LONG", or "MISSING_URL"
+}</pre>
+  <h2>Expanding a short URL</h2>
+  <p><code>GET @shortDomain/v1/urls/:hash</code></p>
+  <p>Note: expanding a short URL via the API does <em>not</em> increment the <code>clicks</code> counter.</p>
+  <p><strong>Response</strong></p>
+  <p>Success (<code>200</code>) if the short URL exists.</p>
+  <pre>{
+  "short_url": "@shortDomain/A1z3r",
+  "hash": "A1z3r",
+  "long_url": "http://test.example.com",
+  "created": "2014-01-01T12:00:00Z"
+}</pre>
+  <p>Error (<code>404</code>) if the short URL does not exist.</p>
+  <pre>{
+  "error": "NOT_FOUND"
+}</pre>
+  <h2>Getting click stats for a short URL</h2>
+  <p><code>GET @shortDomain/v1/urls/:hash/stats</code></p>
+  <p><strong>Response</strong></p>
+  <p>Success (<code>200</code>) if the short URL exists.</p>
+  <pre>{
+  "clicks": 12345
+}</pre>
+  <p>Error (<code>404</code>) if the short URL does not exist.</p>
+  <pre>{
+  "error": "NOT_FOUND"
+}</pre>
+}
