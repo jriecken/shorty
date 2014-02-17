@@ -8,7 +8,7 @@ import play.api.test.Helpers._
 import test.WithTestApplication
 
 /**
- * This test performs a simple happy-path end-to-end through the entire workflow.
+ * This test performs a simple happy-path end-to-end through the entire workflow with no mocks.
  */
 class EndToEndIntegrationTest extends Specification with HeaderNames {
   "The application" should {

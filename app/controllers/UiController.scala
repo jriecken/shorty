@@ -8,6 +8,9 @@ import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import services.UrlShorteningService
 
+/**
+ * Controller that generates the HTML pages and implements the short URL redirect.
+ */
 @Singleton
 class UiController @Inject() (urlShorteningService: UrlShorteningService) extends BaseController {
   /**

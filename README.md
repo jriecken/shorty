@@ -1,5 +1,23 @@
 # Shorty
 
+ - [About](#about)
+ - [Usage](#usage)
+    - [HTML interface](#html-interface)
+    - [REST API](#rest-api)
+        - [`POST /v1/urls`](#post-v1urls)
+        - [`GET /v1/urls/:hash`](#get-v1urlshash)
+        - [`GET /v1/urls/:hash/stats`](#get-v1urlshashstats)
+ - [Building/Running/Testing locally](#buildingrunningtesting-locally)
+    - [Install JDK](#install-jdk)
+    - [Install Play](#install-play)
+    - [Install MongoDB](#install-mongodb)
+    - [Configuration](#configuration)
+    - [Running tests](#running-tests)
+    - [Running](#running)
+ - [Deployment](#deployment)
+
+## About
+
 Shorty is a simple url-shortener service written with:
 
  - Play 2.2.1 (scala) with Guice for dependency injection.
@@ -20,19 +38,20 @@ Shorty has both an HTML interface as well as a JSON-based REST API.
 
 ### HTML interface
 
-(These URLs all assume the server is running on `http://localhost`)
+(These URLs all assume the server is running on `http://localhost:8080`)
 
- - To shorten a URL, visit `http://localhost/` and enter your "long URL".
- - To use the shortened URL, visit `http://localhost/:hash` (where :hash is the "short" code). This will increment the click stats for the url.
- - To view click stats for a shortened URL, visit `http://localhost/:hash/stats`.
+ - To shorten a URL, visit `http://localhost:8080` and enter your "long URL".
+ - To use the shortened URL, visit `http://localhost:8080/:hash` (where `:hash` is the "short" code). This will increment the `clicks` stat for the url.
+ - To view click stats for a shortened URL, visit `http://localhost:8080/:hash/stats`.
 
-## REST API
+### REST API
 
 All API responses have two custom HTTP headers:
- - `X-Shorty-NodeId` - Indicates which application server node handled the request.
- - `X-Shorty-ResponseTime` - Indicates how long the request took to generate.
 
-### `POST /v1/urls`
+ - `X-Shorty-NodeId` - Indicates which application server node handled the request.
+ - `X-Shorty-ResponseTime` - Indicates how long the request took to generate (in milliseconds).
+
+#### `POST /v1/urls`
 
 Shorten a URL. If the same `long_url` is shortened more than once, the same short url will be generated.
 
@@ -47,7 +66,7 @@ Shorten a URL. If the same `long_url` is shortened more than once, the same shor
 `200` If the URL was successfully shortened with a body of:
 
     {
-      "short_url": "http://localhost/A1b43",
+      "short_url": "http://localhost:8080/A1b43",
       "hash": "A1b43",
       "long_url": "http://www.something.com/some/really/long/url",
       "created": "2014-01-01T12:00:00Z"
@@ -71,17 +90,16 @@ Shorten a URL. If the same `long_url` is shortened more than once, the same shor
       "error": "URL_TOO_LONG"
     }
 
-### `GET /v1/urls/:hash`
+#### `GET /v1/urls/:hash`
 
-Expand a short URL (where `:hash` is the "short code" in the short URL). This does *not* increase
-the click count.
+Expand a short URL (where `:hash` is the "short code" in the short URL). This does *not* increase the `clicks` stat.
 
 **Response**
 
 `200` If the short URL exists with a body of:
 
     {
-      "short_url": "http://localhost/A1b43",
+      "short_url": "http://localhost:8080/A1b43",
       "hash": "A1b43",
       "long_url": "http://www.something.com/some/really/long/url",
       "created": "2014-01-01T12:00:00Z"
@@ -93,7 +111,7 @@ the click count.
       "error": "NOT_FOUND"
     }
 
-### `GET /v1/links/:hash/stats`
+#### `GET /v1/urls/:hash/stats`
 
 Get click stats for the specified short URL (where `:hash` is the "short code" in the short URL).
 
@@ -111,7 +129,7 @@ Get click stats for the specified short URL (where `:hash` is the "short code" i
       "error": "NOT_FOUND"
     }
 
-## Building + Running
+## Building/Running/Testing locally
 
 ### Install JDK
 
@@ -131,7 +149,7 @@ If you're using a Mac and Homebrew, just run:
 
     $ brew install mongodb
 
-Otherwise, go to the [MongoDB Website](http://www.mongodb.org/downloads) and follow the instructions for installing it. This has been tested with the latest version of MongoDB at this time (2.4.9)
+Otherwise, go to the [MongoDB Website](http://www.mongodb.org/downloads) and follow the instructions for installing it. This has been tested with the latest version of Mongo at this time (2.4.9)
 
 ### Configuration
 
@@ -142,11 +160,19 @@ Some modifications may be necessary to `conf/application.conf` depending on your
     # Location of your mongo server
     mongodb.servers = ["localhost:27017"]
 
-You will also need to run a setup script on mongo to set up some collections/indexes. This script is in the `scripts` folder -called `create-db.js`. Note that running this script will drop the existing database if it already exists. Just run:
+You will also need to run a setup script on Mongo to set up some collections/indexes. This script is in the `scripts` folder -called `create-db.js`. Note that running this script will drop the existing database if it already exists. Just run:
 
     $ mongo shorty scripts/create-db.js
 
-### Running locally
+### Running tests
+
+To run the tests, run:
+
+    $ play test
+
+Note: Some of the tests require a Mongo connection. They put data in a `shorty-test` database. This database is cleared before each test that requires Mongo is run.
+
+### Running
 
 You can run the application locally in "development mode" by running:
 
@@ -158,14 +184,6 @@ Or "production mode" by running:
 
 from this directory (you can substitute something other than `8080` for a port).
 
-### Running tests
-
-To run the tests, run:
-
-    $ play test
-
-Note: Some of the tests require a mongo connection. They put data in a `shorty-test` database. This database is cleared before each test that requires mongo is run.
-
-### Packaging for deployment
+## Deployment
 
 For more information about deploying the application, take a look at [DEPLOYMENT.md](DEPLOYMENT.md)

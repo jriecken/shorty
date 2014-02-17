@@ -56,6 +56,9 @@ var Shortener = (function () {
     });
   }
 
+  /**
+   * Initialize the URL shortening page.
+   */
   function init() {
     shortenFormGroup = $('#shortenFormGroup');
     shortenField = $('#shortenField');
@@ -68,6 +71,7 @@ var Shortener = (function () {
     shortenField.on('keydown', keyShortenUrl);
     shortenField.focus();
   }
+
   return {
     init: init
   };

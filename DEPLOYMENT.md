@@ -1,8 +1,16 @@
 # Deployment
 
+ - [Software](#software)
+ - [Packaging](#packaging)
+ - [Setting up the database](#setting-up-the-database)
+ - [Running the application server](#running-the-application-server)
+ - [Running the application behind Nginx](#running-the-application-behind-nginx)
+
+## Software
+
 You'll need:
 
- - Mongo installed (locally to the app server or externally)
+ - MongoDB installed (somewhere the app server can access)
  - Java 1.7 JDK installed on the app server
  - (optional) Nginx installed
 
@@ -12,11 +20,11 @@ As mentioned in the README, you can package shorty for deployment by running:
 
     $ play universal:package-zip-tarball
 
-This creates a `shorty-X.X.tgz` tarball in the `target/universal` directory.
+This creates a `shorty-1.0.tgz` tarball in the `target/universal` directory.
 
 ## Setting up the database
 
-The first time that you deploy shorty, you'll need to set up the `shorty` mongo database.
+The first time that you deploy shorty, you'll need to set up the `shorty` Mongo database.
 
 There is a `scripts/create-db.js` script that will do this for you. To run it:
 
@@ -24,28 +32,30 @@ There is a `scripts/create-db.js` script that will do this for you. To run it:
 
 ## Running the application server
 
-Extract the `shorty-X.X.tgz` file to a location on your server.
+Extract the `shorty-1.0.tgz` file to a location on your server.
 
-You can then run the application with: (replace port/mongo url/short domain/node id/pidfile as appropriate)
+You can then run the application with: (replace port/Mongo url/short domain/node id/pidfile as appropriate)
 
-    $ ./bin/shorty -mem 256 -J-server -Dhttp.port=8080 \
+    $ nohup ./bin/shorty -mem 256 -J-server -Dhttp.port=8080 \
         -Dmongodb.url=mongodb://localhost:27017/shorty \
         -Dapplication.shortDomain=http://shorty.example.com \
         -Dapplication.nodeId=1 \
-        -Dpidfile.path=/path/to/shorty-1.pid
+        -Dpidfile.path=/path/to/shorty-1.pid >&/dev/null &
 
 
 To stop the application:
 
-    $ kill `cat /var/run/shorty.pid`
+    $ kill `cat /path/to/shorty-1.pid`
 
 For more startup options, see the [Play Production Configuration](http://www.playframework.com/documentation/2.2.x/ProductionConfiguration) page.
 
-## Runing the application behind Nginx
+## Running the application behind Nginx
 
-It is recommended that you run the application behind a front-end HTTP server. This way you can run several load-balanced instances of the application if you want to (or run multiple separate apps)
+Shorty can easily run in a load-balanced environment with multiple application server instances.
 
-Example Nginx config load balancing 3 instances (running on `8080`, `8081`, `8082`):
+If you run multiple instances, ensure that the `application.nodeId` configuration value is different on each node.
+
+Example Nginx config for load balancing 3 instances (running on `8080`, `8081`, `8082`):
 
 In `/etc/nginx/sites-available/shorty`
 
