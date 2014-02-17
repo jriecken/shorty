@@ -45,7 +45,15 @@ For more startup options, see the [Play Production Configuration](http://www.pla
 
 It is recommended that you run the application behind a front-end HTTP server. This way you can run several load-balanced instances of the application if you want to (or run multiple separate apps)
 
-Example nginx config load balacing 3 instances (running on `8080`, `8081`, `8082`):
+Example Nginx config load balancing 3 instances (running on `8080`, `8081`, `8082`):
+
+In `/etc/nginx/sites-available/shorty`
+
+    upstream shorty-backend {
+      server localhost:8080;
+      server localhost:8081;
+      server localhost:8082;
+    }
 
     server {
       listen 80;
@@ -61,18 +69,12 @@ Example nginx config load balacing 3 instances (running on `8080`, `8081`, `8082
 
       charset UTF-8;
 
-      upstream shorty-backend {
-        server localhost:8080;
-        server localhost:8081;
-        server localhost:8082;
-      }
-
       location / {
-        proxy_buffering  off;
-        proxy_set_header  X-Real-IP $remote_addr;
-        proxy_set_header  X-Scheme $scheme;
-        proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header  Host $http_host;
         proxy_pass http://shorty-backend;
+        proxy_http_version 1.1;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Scheme $scheme;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
       }
     }
